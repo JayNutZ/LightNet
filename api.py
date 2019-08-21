@@ -17,40 +17,34 @@ def colorize():
 
     color = Color(request.args.get('r'), request.args.get('g'), request.args.get('b'))
     
+    config.set_color(color)
+    config.set_active(True)
+    
     lights.colorize(color)
 
-    return color.to_string()
+    return jsonify(config.get())
 
 @app.route('/api/stop')
 def stop():
     config = Config()
+    
+    config.set_active(False)
+    
     lights = get_lights(config.get())
     running = lights.stop()
-
-    return jsonify({'running': running})
+    
+    return jsonify(config.get())
 
 @app.route('/api/conf')
 def set_pins():
     config = Config()
-    current = config.get()
-
-    current['pins']['red'] = request.args.get('r')
-    current['pins']['green'] = request.args.get('g')
-    current['pins']['blue'] = request.args.get('b')
-
-    config.update(current)
+    
+    config.set_pins(request.args.get('r'), request.args.get('g'), request.args.get('b'))
 
     return jsonify(config.get())
 
-def summary():
-    config = Config()
-
-    out = config.get()
-    
-    return out
-
 def get_lights(config):
-    return Lights(config['pins']['red'], config['pins']['blue'], config['pins']['green'])
+    return Lights(config['pins'])
 
 
 if __name__ == '__main__':
