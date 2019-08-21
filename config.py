@@ -3,13 +3,25 @@ import json
 
 class Config:
     filename = 'config.json'
-    config = {}
+    config = {
+        "pins": {
+            "red": 1,
+            "green": 2,
+            "blue": 3
+        },
+        "color": {
+            "red": 0,
+            "green": 0,
+            "blue": 0
+        },
+        "active": False
+    }
 
     def __init__(self):
         try:
             self.load()
         except IOError:
-            self.create()
+            self.update()
             self.load()
 
     def load(self):
@@ -18,24 +30,28 @@ class Config:
 
     def get(self):
         return self.config
+    
+    def set_pins(self, red, green, blue):
+        self.config['pins']['red'] = red
+        self.config['pins']['green'] = green
+        self.config['pins']['blue'] = blue
+        self.update()
 
-    def update(self, new):
+    def set_color(self, color):
+        self.config['color']['red'] = color.get_red()
+        self.config['color']['green'] = color.get_green()
+        self.config['color']['blue'] = color.get_blue()
+        self.update()
+        
+    def set_active(self, active):
+        self.config['active'] = active
+        self.update()
+
+    def update(self):
         with open(self.filename, 'w+') as config_file:
-            json.dump(new, config_file)
+            json.dump(self.config, config_file)
+        self.load()
 
     def create(self):
-        return self.update({
-            "pins": {
-                "red": 1,
-                "green": 2,
-                "blue": 3
-            }
-        })
+        return self.update()
 
-
-# ,
-#            "color": {
-#                "red": 0,
-#                "green": 0,
-#                "blue": 0
-#            }
