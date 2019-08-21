@@ -8,23 +8,6 @@ from config import Config
 app = Flask(__name__)
 api = Api(app)
 
-
-@app.route('/api/start')
-def start():
-    config = Config()
-    lights = get_lights(config.get())
-    running = lights.start()
-
-    return jsonify({'running': running, 'conf': lights.get_pins()})
-
-@app.route('/api/stop')
-def stop():
-    config = Config()
-    lights = get_lights(config.get())
-    running = lights.stop()
-
-    return jsonify({'running': running})
-
 @app.route('/api/set')
 def colorize():
     config = Config()
@@ -33,9 +16,19 @@ def colorize():
     lights = get_lights(current)
 
     color = Color(request.args.get('r'), request.args.get('g'), request.args.get('b'))
-    lights.set_color(color)
+    
+    lights.colorize(color)
 
     return color.to_string()
+
+
+@app.route('/api/stop')
+def stop():
+    config = Config()
+    lights = get_lights(config.get())
+    running = lights.stop()
+
+    return jsonify({'running': running})
 
 
 @app.route('/api/conf')
@@ -51,6 +44,10 @@ def set_pins():
 
     return jsonify(config.get())
 
+def summary():
+    out = config.get()
+    
+    return out
 
 def get_lights(config):
     return Lights(config['pins']['red'], config['pins']['blue'], config['pins']['green'])
