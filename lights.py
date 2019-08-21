@@ -14,30 +14,17 @@ class Lights:
         self.pins['green'] = pin_green
         self.pins['blue'] = pin_blue
 
-    def start(self):
-        self.on = True
-
-        self.runner()
-
-        return self.on
-
     def stop(self):
-        self.on = False
+        self.gpio.kill()
         return self.on
 
-    def runner(self):
-        self.tick()
-        # while self.on:
-        #    sleep(120)
-
-    def tick(self):
-        self.gpio.update(self.pins, self.current_color)
-
-    def set_color(self, color):
+    def colorize(self, color):
         self.current_color = color
+        return self.gpio.update(self.pins, self.current_color)
 
     def is_active(self):
         return self.on
 
     def get_pins(self):
         return self.pins
+
