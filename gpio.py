@@ -1,13 +1,19 @@
-from flask import jsonify
+import RPi.GPIO as GPIO
 
 class Gpio:
-    def __init__(self):
-        lool = ""
-
     def update(self, pins, color):
-        self.set_pin(pins['red'], color.get_red())
-        self.set_pin(pins['green'], color.get_green())
-        self.set_pin(pins['blue'], color.get_blue())
+        self.set_pin(int(pins['red']), color.get_red())
+        self.set_pin(int(pins['green']), color.get_green())
+        self.set_pin(int(pins['blue']), color.get_blue())
 
     def set_pin(self, pin, value):
-        print jsonify({'pin': pin, 'value': value})
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(pin, GPIO.OUT)
+        p = GPIO.PWM(pin, 80)
+        p.start(self.percentage(value))
+        
+    def kill(self):
+        GPIO.cleanup()
+        
+    def percentage(self, value):
+        return round(int(value) / 2.55)
