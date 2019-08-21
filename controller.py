@@ -1,9 +1,11 @@
 import RPi.GPIO as GPIO
+from console import Console
+import sys
 
-
-class Gpio:
+class Controller:
+    
     def __init__(self):
-        True
+        GPIO.setmode(GPIO.BCM)
 
     def update(self, pins, color):
         self.set_pin(int(pins['red']), color.get_red())
@@ -11,6 +13,9 @@ class Gpio:
         self.set_pin(int(pins['blue']), color.get_blue())
 
     def set_pin(self, pin, value):
+        c = Console()
+        c.log('P' + str(pin) + '=' + str(value))
+        
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(pin, GPIO.OUT)
         p = GPIO.PWM(pin, 80)
@@ -21,3 +26,4 @@ class Gpio:
         
     def percentage(self, value):
         return round(int(value) / 2.55)
+
