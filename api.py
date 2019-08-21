@@ -21,7 +21,6 @@ def colorize():
 
     return color.to_string()
 
-
 @app.route('/api/stop')
 def stop():
     config = Config()
@@ -29,7 +28,6 @@ def stop():
     running = lights.stop()
 
     return jsonify({'running': running})
-
 
 @app.route('/api/conf')
 def set_pins():
@@ -45,6 +43,8 @@ def set_pins():
     return jsonify(config.get())
 
 def summary():
+    config = Config()
+
     out = config.get()
     
     return out

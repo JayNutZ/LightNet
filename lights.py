@@ -1,6 +1,6 @@
 from color import Color
 from gpio import Gpio
-from time import sleep
+
 
 class Lights:
     gpio = Gpio()

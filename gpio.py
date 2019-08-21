@@ -1,6 +1,10 @@
 import RPi.GPIO as GPIO
 
+
 class Gpio:
+    def __init__(self):
+        True
+
     def update(self, pins, color):
         self.set_pin(int(pins['red']), color.get_red())
         self.set_pin(int(pins['green']), color.get_green())
