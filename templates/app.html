@@ -3,43 +3,105 @@
 <head>
     <title>LightNet</title>
 
-    <script type="text/javascript">
-        function setColor(hex) {
-            console.log(hex);
-            var rgb = hexToRgb(hex);
-            console.log(rgb);
-            reqGet('http://127.0.0.1:5000/api/set?r=' + rgb.red + '&g=' + rgb.green + '&b=' + rgb.blue);
-        }
-
-        function off() {
-            reqGet('http://127.0.0.1:5000/api/stop');
-        }
-
-        function config() {
-
-        }
-
-        function hexToRgb(hex){
-            hex = hex.replace('#','');
-            r = parseInt(hex.substring(0,2), 16);
-            g = parseInt(hex.substring(2,4), 16);
-            b = parseInt(hex.substring(4,6), 16);
-
-            return {red: r, green: g, blue: b};
-        }
-
-        function reqGet(url) {
-            fetch(url).then(response => response.json()).then(function(response) {
-                console.log(response);
-            })
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
-    <div class="site">
-        <input type="color" value="#ffffff" onchange="setColor(this.value)"/>
+    <div class="site" id="app">
+        <input type="color" v-model="hex" @change="setColor"/>
 
-        <button onclick="off()">OFF</button>
+        <button @click="off()">OFF</button>
+
+        <input type="number" v-model="pins.red"/>
+        <input type="number" v-model="pins.green"/>
+        <input type="number" v-model="pins.blue"/>
+
+        <button @click="config()">SET PINS</button>
     </div>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+
+            data: {
+                pins: {
+                    red: 0,
+                    green: 0,
+                    blue: 0
+                },
+                rgb: {
+                    red: 0,
+                    green: 0,
+                    blue: 0
+                },
+                hex: '#ffffff'
+            },
+
+            methods: {
+                init() {
+                    this.off();
+                },
+
+                setColor() {
+                    this.hexToRgb();
+                    this.reqGet('/api/set?r=' + this.rgb.red + '&g=' + this.rgb.green + '&b=' + this.rgb.blue);
+                },
+
+                off() {
+                    this.reqGet('/api/stop');
+                },
+
+                config() {
+                    this.reqGet('/api/conf?r=' + this.pins.red + '&g=' + this.pins.green + '&b=' + this.pins.blue)
+                },
+
+                setPin(pin, value) {
+                    if (pin === 'red') {
+                        this.pins.red = value;
+                    } else if (pin === 'green') {
+                        this.pins.green = value;
+                    } else if (pin === 'blue') {
+                        this.pins.blue = value;
+                    }
+                },
+
+                reqGet(url) {
+                    fetch(window.location.origin + url).then(response => response.json()).then((json) => {
+                        this.applyReq(json);
+                    })
+                },
+
+                applyReq(json) {
+                    this.pins = json.pins;
+
+                    this.rgb = json.color;
+                    this.rgbToHex();
+                    
+                    console.log(json);
+                },
+
+                hexToRgb(){
+                    hex = this.hex.replace('#','');
+                    r = parseInt(hex.substring(0,2), 16);
+                    g = parseInt(hex.substring(2,4), 16);
+                    b = parseInt(hex.substring(4,6), 16);
+
+                    this.rgb = {red: r, green: g, blue: b};
+                },
+                
+                rgbToHex() {
+                    this.hex = "#" + this.componentToHex(this.rgb.red) + this.componentToHex(this.rgb.green) + this.componentToHex(this.rgb.blue);
+                },
+                
+                componentToHex(c) {
+                    var hex = c.toString(16);
+                    return hex.length == 1 ? "0" + hex : hex;
+                }
+            },
+
+            created() {
+                this.init();
+            }
+        })
+    </script>
 </body>
 </html>
