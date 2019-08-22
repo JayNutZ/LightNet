@@ -26,6 +26,10 @@ class Controller:
             self.pwms[pin].start(self.percentage(value))
 
     def kill(self):
+        for pwm in self.pwms:
+            pwm.stop()
+
+        self.pwms = {}
         GPIO.cleanup()
 
     def percentage(self, value):
