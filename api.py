@@ -31,7 +31,7 @@ def stop():
     config.set_active(False)
     
     lights = get_lights(config.get())
-    running = lights.stop()
+    lights.stop()
     
     return jsonify(config.get())
 

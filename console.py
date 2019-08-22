@@ -1,3 +1,4 @@
+
 class Console:
     filename = 'console.log'
     
@@ -5,6 +6,5 @@ class Console:
         self.log('')
 
     def log(self, msg):
-        with open(self.filename, 'w+') as console:
-            full = console.read() + '\n' + msg
-            console.write(full)
+        with open(self.filename, 'a') as console:
+            console.write(msg + '\n')

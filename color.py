@@ -11,9 +11,6 @@ class Color:
         self.green = green
         self.blue = blue
 
-    def set_hex(self, hexa):
-        print "HEX: #" + hexa
-
     def to_string(self):
         return self.red + ", " + self.green + ", " + self.blue
 
