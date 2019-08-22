@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LightNet</title>
+
+    <script type="text/javascript">
+        function setColor(hex) {
+            console.log(hex);
+            var rgb = hexToRgb(hex);
+            console.log(rgb);
+            reqGet('http://127.0.0.1:5000/api/set?r=' + rgb.red + '&g=' + rgb.green + '&b=' + rgb.blue);
+        }
+
+        function off() {
+            reqGet('http://127.0.0.1:5000/api/stop');
+        }
+
+        function config() {
+
+        }
+
+        function hexToRgb(hex){
+            hex = hex.replace('#','');
+            r = parseInt(hex.substring(0,2), 16);
+            g = parseInt(hex.substring(2,4), 16);
+            b = parseInt(hex.substring(4,6), 16);
+
+            return {red: r, green: g, blue: b};
+        }
+
+        function reqGet(url) {
+            fetch(url).then(response => response.json()).then(function(response) {
+                console.log(response);
+            })
+        }
+    </script>
+</head>
+<body>
+    <div class="site">
+        <input type="color" value="#ffffff" onchange="setColor(this.value)"/>
+
+        <button onclick="off()">OFF</button>
+    </div>
+</body>
+</html>

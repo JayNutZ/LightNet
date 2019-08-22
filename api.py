@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_restful import Resource, Api
 
 from lights import Lights
@@ -7,6 +7,10 @@ from config import Config
 
 app = Flask(__name__)
 api = Api(app)
+
+@app.route('/')
+def screen():
+    return render_template('app.html')
 
 @app.route('/api/set')
 def colorize():
@@ -22,7 +26,7 @@ def colorize():
     
     lights.colorize(color)
 
-    return jsonify(config.get())
+    return api_request(jsonify(config.get()))
 
 @app.route('/api/stop')
 def stop():
@@ -33,7 +37,7 @@ def stop():
     lights = get_lights(config.get())
     lights.stop()
     
-    return jsonify(config.get())
+    return api_request(jsonify(config.get()))
 
 @app.route('/api/conf')
 def set_pins():
@@ -41,7 +45,16 @@ def set_pins():
     
     config.set_pins(request.args.get('r'), request.args.get('g'), request.args.get('b'))
 
-    return jsonify(config.get())
+    return api_request(jsonify(config.get()))
+
+
+def api_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    response.headers.add('Content-Type', 'application/json')
+    return response
+
 
 def get_lights(config):
     return Lights(config['pins'])
