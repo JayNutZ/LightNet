@@ -1,21 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   
     <title>LightNet</title>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background: #ececd7;
+        }
+        
+        button, input[type=button], input[type=color] {
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            background-color: #dd1133;
+            outline: none;
+            color: white;
+            cursor: pointer;
+            transition: background-color .2s;
+        }
+        
+        button:hover, input[type=button]:hover, input[type=color]:hover {
+            background-color: #990011;
+        }
+        
+        button:disabled, input[type=button]:disabled, input[type=color]:disabled {
+            background-color: #333333;
+        }
+        
+        input[type=color] {
+            position: fixed;
+            height: 64px;
+            width: 64px;
+            padding: 12px;
+            bottom: 32px;
+            border-radius: 44px;
+            left: calc(50% - 32px);
+        }
+        
+        input[type=number] {
+            margin-bottom: 6px;
+        }
+        
+        label {
+            font-size: 10px;
+        }
+        
+        .nav {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: calc(100% - 24px);
+            height: 32px;
+            padding: 12px;
+            background-color: #444444;
+        }
+        
+        .config {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 0;
+            background-color: #ccccb6;
+            border-bottom: 1px solid #aaaaaa;
+        }
+    </style>
 </head>
 <body>
     <div class="site" id="app">
-        <input type="color" v-model="hex" @change="setColor"/>
+       <div class="nav">
+           <button @click="off()" :disabled="!active">OFF</button>
+           <button @click="toggleConfig()">Settings</button>
+       </div>
 
-        <button @click="off()">OFF</button>
+       <div class="config" v-if="show_config">
+           <label>RED: <input type="number" v-model="pins.red"/></label>
+           <label>GREEN: <input type="number" v-model="pins.green"/></label>
+           <label>BLUE: <input type="number" v-model="pins.blue"/></label>
 
-        <input type="number" v-model="pins.red"/>
-        <input type="number" v-model="pins.green"/>
-        <input type="number" v-model="pins.blue"/>
-
-        <button @click="config()">SET PINS</button>
+           <button @click="config()">SET PINS</button>
+       </div>
+       
+       <input type="color" v-model="hex" @change="setColor"/>
     </div>
 
     <script>
@@ -23,6 +94,7 @@
             el: '#app',
 
             data: {
+                active: false,
                 pins: {
                     red: 0,
                     green: 0,
@@ -33,7 +105,9 @@
                     green: 0,
                     blue: 0
                 },
-                hex: '#ffffff'
+                hex: '#ffffff',
+                
+                show_config: false,
             },
 
             methods: {
@@ -51,7 +125,9 @@
                 },
 
                 config() {
-                    this.reqGet('/api/conf?r=' + this.pins.red + '&g=' + this.pins.green + '&b=' + this.pins.blue)
+                    this.reqGet('/api/conf?r=' + this.pins.red + '&g=' + this.pins.green + '&b=' + this.pins.blue);
+                    
+                    this.show_config = false;
                 },
 
                 setPin(pin, value) {
@@ -74,7 +150,9 @@
                     this.pins = json.pins;
 
                     this.rgb = json.color;
-                    this.rgbToHex();
+                    
+                    this.active = json.active;
+                    //this.rgbToHex();
                     
                     console.log(json);
                 },
@@ -95,6 +173,10 @@
                 componentToHex(c) {
                     var hex = c.toString(16);
                     return hex.length == 1 ? "0" + hex : hex;
+                },
+                
+                toggleConfig() {
+                    this.show_config = !this.show_config;
                 }
             },
 
