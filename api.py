@@ -5,12 +5,20 @@ from lights import Lights
 from color import Color
 from config import Config
 
-app = Flask(__name__)
+app = Flask(__name__,
+            static_url_path='', 
+            static_folder='public',
+            template_folder='templates')
 api = Api(app)
 
 @app.route('/')
 def screen():
     return render_template('app.html')
+
+@app.route('/api/get')
+def get():
+    config = Config()
+    return api_request(jsonify(config.get()))
 
 @app.route('/api/set')
 def colorize():
@@ -61,4 +69,4 @@ def get_lights(config):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port='80')
+    app.run(debug=True, host='0.0.0.0', port='5000')

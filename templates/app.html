@@ -3,6 +3,8 @@
 <head>
    <meta name="viewport" content="width=device-width, initial-scale=1">
    
+    <link rel="manifest" href="/manifest.json">
+   
     <title>LightNet</title>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -112,7 +114,11 @@
 
             methods: {
                 init() {
-                    this.off();
+                    this.update();
+                },
+                
+                update() {
+                    this.reqGet('/api/get');
                 },
 
                 setColor() {
