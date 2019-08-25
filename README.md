@@ -1,8 +1,11 @@
 # LightNet
 * run `api.py`
+
+-- TEST --
+
 * open `http://0.0.0.0:5000` on same device (mostly RPi)
 
--- OR --
+-- OR RUN --
 
 * open terminal
 * run `ifconfig` to find local IP
