@@ -1,5 +1,5 @@
 from color import Color
-from controller import Controller
+from controller_dummy import Controller
 
 
 class Lights:
