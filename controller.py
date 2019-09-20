@@ -36,11 +36,11 @@ class Controller:
         value = self.percentage(value)
 
         if color == 'red':
-            return value * float(conf['balance']['red'])
+            return int(float(value) * float(conf['balance']['red']))
         elif color == 'green':
-            return value * float(conf['balance']['green'])
+            return int(float(value) * float(conf['balance']['green']))
         elif color == 'blue':
-            return value * float(conf['balance']['blue'])
+            return int(float(value) * float(conf['balance']['blue']))
 
     def percentage(self, value):
         return round(int(value) / 2.55)
