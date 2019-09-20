@@ -14,6 +14,11 @@ class Config:
             "green": 0,
             "blue": 0
         },
+        "balance": {
+            "red": 0,
+            "green": 0,
+            "blue": 0
+        },
         "active": False
     }
 
@@ -42,7 +47,13 @@ class Config:
         self.config['color']['green'] = color.get_green()
         self.config['color']['blue'] = color.get_blue()
         self.update()
-        
+
+    def set_balance(self, red, green, blue):
+        self.config['balance']['red'] = red
+        self.config['balance']['green'] = green
+        self.config['balance']['blue'] = blue
+        self.update()
+
     def set_active(self, active):
         self.config['active'] = active
         self.update()

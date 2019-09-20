@@ -11,14 +11,17 @@ app = Flask(__name__,
             template_folder='templates')
 api = Api(app)
 
+
 @app.route('/')
 def screen():
     return render_template('app.html')
+
 
 @app.route('/api/get')
 def get():
     config = Config()
     return api_request(jsonify(config.get()))
+
 
 @app.route('/api/set')
 def colorize():
@@ -36,6 +39,7 @@ def colorize():
 
     return api_request(jsonify(config.get()))
 
+
 @app.route('/api/stop')
 def stop():
     config = Config()
@@ -47,11 +51,14 @@ def stop():
     
     return api_request(jsonify(config.get()))
 
+
 @app.route('/api/conf')
 def set_pins():
     config = Config()
     
-    config.set_pins(request.args.get('r'), request.args.get('g'), request.args.get('b'))
+    config.set_pins(request.args.get('pin_r'), request.args.get('pin_g'), request.args.get('pin_b'))
+
+    config.set_balance(request.args.get('bal_r'), request.args.get('bal_g'), request.args.get('bal_b'))
 
     return api_request(jsonify(config.get()))
 
