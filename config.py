@@ -1,5 +1,5 @@
 import json
-
+from color import Color
 
 class Config:
     filename = 'config.json'
@@ -36,6 +36,9 @@ class Config:
     def get(self):
         return self.config
     
+    def get_color(self):
+        return Color(self.config['color']['red'], self.config['color']['green'], self.config['color']['blue'])
+    
     def set_pins(self, red, green, blue):
         self.config['pins']['red'] = red
         self.config['pins']['green'] = green
@@ -43,9 +46,9 @@ class Config:
         self.update()
 
     def set_color(self, color):
-        self.config['color']['red'] = color.get_red()
-        self.config['color']['green'] = color.get_green()
-        self.config['color']['blue'] = color.get_blue()
+        self.config['color']['red'] = str(color.get_red())
+        self.config['color']['green'] = str(color.get_green())
+        self.config['color']['blue'] = str(color.get_blue())
         self.update()
 
     def set_balance(self, red, green, blue):

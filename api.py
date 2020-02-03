@@ -29,6 +29,7 @@ def colorize():
     current = config.get()
 
     lights = get_lights(current)
+    lights.set_current(config.get_color())
 
     color = Color(request.args.get('r'), request.args.get('g'), request.args.get('b'))
     
@@ -69,7 +70,6 @@ def api_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     response.headers.add('Content-Type', 'application/json')
     return response
-
 
 def get_lights(config):
     return Lights(config['pins'])

@@ -1,14 +1,13 @@
-from gpiozero.pins.pigpio import PiGPIOFactory
-from gpiozero import PWMLED
+import RPi.GPIO as GPIO
 from config import Config
 from console import Console
 
 class Controller:
-    factory = False
+    frequency = 48;
     pwms = {}
 
     def __init__(self):
-        self.factory = PiGPIOFactory()
+        GPIO.setmode(GPIO.BCM)
 
     def update(self, pins, color):
         self.set_pin(int(pins['red']), self.balance(color.get_red(), 'red'))
@@ -20,25 +19,33 @@ class Controller:
         console.log('SET PIN #' + str(pin) + ': ' + str(value))
         
         if pin in self.pwms:
-            self.pwms[pin].value = value
+            self.pwms[pin].ChangeDutyCycle(value)
         else:
-            self.pwms[pin] = PWMLED(pin, pin_factory=self.factory)
-            self.pwms[pin].value = value
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(pin, GPIO.OUT)
+            self.pwms[pin] = GPIO.PWM(pin, self.frequency)
+            self.pwms[pin].start(value)
 
     def kill(self):
         for pwm in self.pwms:
-            self.pwms[pwm].close()
-        
+            self.pwms[pwm].stop()
+
         self.pwms = {}
+        GPIO.cleanup()
 
     def balance(self, value, color):
         config_ctrl = Config()
         conf = config_ctrl.get()
 
-        value = int(float(value) * float(conf['balance'][color]))
-        
-        return self.percentage(value)
+        value = self.percentage(value)
 
-    # changed to 0-1
+        if color == 'red':
+            return int(float(value) * float(conf['balance']['red']))
+        elif color == 'green':
+            return int(float(value) * float(conf['balance']['green']))
+        elif color == 'blue':
+            return int(float(value) * float(conf['balance']['blue']))
+
     def percentage(self, value):
-        return int(value) / 255
+        return round(int(value) / 2.55)
+
