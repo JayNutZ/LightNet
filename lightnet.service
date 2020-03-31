@@ -1,0 +1,17 @@
+[Unit]
+Description=LightNet Raspberry Pi RGB
+After=network-online.target
+
+[Service]
+WorkingDirectory=/home/pi/Software/LightNet
+ExecStart=/usr/bin/python3 -u lgtt.py
+Type=simple
+SyslogIdentifier=pyserver
+StandardOutput=syslog
+StandardError=syslog
+Restart=always
+RestartSec=3
+User=pi
+
+[Install]
+WantedBy=multi-user.target

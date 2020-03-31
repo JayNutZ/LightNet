@@ -1,6 +1,7 @@
 import json
 from color import Color
 
+
 class Config:
     filename = 'config.json'
     config = {
@@ -35,10 +36,10 @@ class Config:
 
     def get(self):
         return self.config
-    
+
     def get_color(self):
         return Color(self.config['color']['red'], self.config['color']['green'], self.config['color']['blue'])
-    
+
     def set_pins(self, red, green, blue):
         self.config['pins']['red'] = red
         self.config['pins']['green'] = green

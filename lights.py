@@ -12,20 +12,25 @@ class Lights:
     def __init__(self, pins):
         self.pins = pins
         self.transition.conf(20, 0.01)
-        
+
     def set_current(self, color):
         self.current_color = color
 
+    def set_transition(self, seconds):
+        self.transition.conf(seconds * 10, 0.01)
+
     def stop(self):
+        self.colorize(Color(0, 0, 0), self.kill)
+
+    def kill(self):
         self.gpio.kill()
 
-    def colorize(self, color):
-        self.transition.run(self.current_color, color, self.set_color)
-        
+    def colorize(self, color, callback=None):
+        self.transition.run(self.current_color, color, self.set_color, callback)
+
     def set_color(self, color):
         self.current_color = color
         return self.gpio.update(self.pins, self.current_color)
 
     def get_pins(self):
         return self.pins
-

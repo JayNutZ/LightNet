@@ -3,6 +3,7 @@ from gpiozero import PWMLED
 from config import Config
 from console import Console
 
+
 class Controller:
     factory = False
     pwms = {}
@@ -18,7 +19,7 @@ class Controller:
     def set_pin(self, pin, value):
         console = Console()
         console.log('SET PIN #' + str(pin) + ': ' + str(value))
-        
+
         if pin in self.pwms:
             self.pwms[pin].value = value
         else:
@@ -28,7 +29,7 @@ class Controller:
     def kill(self):
         for pwm in self.pwms:
             self.pwms[pwm].close()
-        
+
         self.pwms = {}
 
     def balance(self, value, color):
@@ -36,7 +37,7 @@ class Controller:
         conf = config_ctrl.get()
 
         value = int(float(value) * float(conf['balance'][color]))
-        
+
         return self.percentage(value)
 
     # changed to 0-1

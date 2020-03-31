@@ -6,7 +6,7 @@ from color import Color
 from config import Config
 
 app = Flask(__name__,
-            static_url_path='', 
+            static_url_path='',
             static_folder='public',
             template_folder='templates')
 api = Api(app)
@@ -32,10 +32,10 @@ def colorize():
     lights.set_current(config.get_color())
 
     color = Color(request.args.get('r'), request.args.get('g'), request.args.get('b'))
-    
+
     config.set_color(color)
     config.set_active(True)
-    
+
     lights.colorize(color)
 
     return api_request(jsonify(config.get()))
@@ -44,19 +44,19 @@ def colorize():
 @app.route('/api/stop')
 def stop():
     config = Config()
-    
+
     config.set_active(False)
-    
+
     lights = get_lights(config.get())
     lights.stop()
-    
+
     return api_request(jsonify(config.get()))
 
 
 @app.route('/api/conf')
 def set_pins():
     config = Config()
-    
+
     config.set_pins(request.args.get('pin_r'), request.args.get('pin_g'), request.args.get('pin_b'))
 
     config.set_balance(request.args.get('bal_r'), request.args.get('bal_g'), request.args.get('bal_b'))
@@ -70,6 +70,7 @@ def api_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     response.headers.add('Content-Type', 'application/json')
     return response
+
 
 def get_lights(config):
     return Lights(config['pins'])
